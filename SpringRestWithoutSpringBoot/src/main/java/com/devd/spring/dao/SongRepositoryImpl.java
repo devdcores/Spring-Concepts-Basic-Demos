@@ -2,6 +2,7 @@ package com.devd.spring.dao;
 
 import com.devd.spring.entity.Song;
 import com.devd.spring.exception.SongIdNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 @Repository
 @Transactional
+@Slf4j
 public class SongRepositoryImpl implements SongRepository {
 
     @Autowired
@@ -37,6 +39,7 @@ public class SongRepositoryImpl implements SongRepository {
             Query<Song> q = currentSession.createQuery(criteria);
             song = q.getSingleResult();
         } catch (Exception e) {
+            log.error("Exception : "+e.getMessage());
             throw new SongIdNotFoundException("SongId doesn't exist!!");
         }
 

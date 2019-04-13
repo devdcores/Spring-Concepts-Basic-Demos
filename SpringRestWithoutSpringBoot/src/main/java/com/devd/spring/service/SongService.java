@@ -3,7 +3,7 @@ package com.devd.spring.service;
 import com.devd.spring.dao.SongRepository;
 import com.devd.spring.entity.Song;
 import com.devd.spring.exception.SongIdNotFoundException;
-import org.hibernate.query.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,7 @@ import java.util.UUID;
  * Date : 2019-04-08 08:38
  */
 @Service
+@Slf4j
 public class SongService {
 
     @Autowired
@@ -25,12 +26,14 @@ public class SongService {
         try {
             songUUID = UUID.fromString(songId);
         } catch (Exception e) {
+            log.error("Exception : "+e.getMessage());
             throw new SongIdNotFoundException("SongId doesn't exist!!");
         }
         return songRepository.getSongById(songUUID);
     }
 
     public String saveSong(Song song) {
+        log.info("Saving Song in DB!!");
         return songRepository.saveSong(song);
     }
 
