@@ -1,24 +1,32 @@
 package com.devd.spring.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name = "SONG")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Song {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "SONG_ID", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "SONG_NAME")
     private String name;
@@ -32,10 +40,4 @@ public class Song {
     @Column(name = "YEAR")
     private String year;
 
-    public Song(String name, String filmName, String singer, String year) {
-        this.name = name;
-        this.filmName = filmName;
-        this.singer = singer;
-        this.year = year;
-    }
 }

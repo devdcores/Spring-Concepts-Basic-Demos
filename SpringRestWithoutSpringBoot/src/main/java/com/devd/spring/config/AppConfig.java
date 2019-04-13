@@ -1,6 +1,5 @@
 package com.devd.spring.config;
 
-import com.devd.spring.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,7 +17,9 @@ import static org.hibernate.cfg.AvailableSettings.C3P0_MAX_SIZE;
 import static org.hibernate.cfg.AvailableSettings.C3P0_MAX_STATEMENTS;
 import static org.hibernate.cfg.AvailableSettings.C3P0_MIN_SIZE;
 import static org.hibernate.cfg.AvailableSettings.C3P0_TIMEOUT;
+import static org.hibernate.cfg.AvailableSettings.DIALECT;
 import static org.hibernate.cfg.AvailableSettings.DRIVER;
+import static org.hibernate.cfg.AvailableSettings.FORMAT_SQL;
 import static org.hibernate.cfg.AvailableSettings.HBM2DDL_AUTO;
 import static org.hibernate.cfg.AvailableSettings.PASS;
 import static org.hibernate.cfg.AvailableSettings.SHOW_SQL;
@@ -33,7 +34,6 @@ import static org.hibernate.cfg.AvailableSettings.USER;
 @Configuration
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"com.devd.spring"})
 public class AppConfig {
 
     @Autowired
@@ -49,10 +49,12 @@ public class AppConfig {
         properties.put(URL, env.getProperty("jdbc.jdbcUrl"));
         properties.put(USER, env.getProperty("jdbc.username"));
         properties.put(PASS, env.getProperty("jdbc.password"));
+        properties.put(DIALECT, env.getProperty("hibernate.dialect"));
 
         // Setting Hibernate properties
         properties.put(SHOW_SQL, env.getProperty("hibernate.show_sql"));
         properties.put(HBM2DDL_AUTO, env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put(FORMAT_SQL, env.getProperty("hibernate.format_sql"));
 
         // Setting C3P0 properties
         properties.put(C3P0_MIN_SIZE, env.getProperty("hibernate.c3p0.min_size"));
@@ -62,7 +64,7 @@ public class AppConfig {
         properties.put(C3P0_MAX_STATEMENTS, env.getProperty("hibernate.c3p0.max_statements"));
 
         localSessionFactoryBean.setHibernateProperties(properties);
-        localSessionFactoryBean.setAnnotatedClasses(Student.class);
+        localSessionFactoryBean.setPackagesToScan("com.devd.spring");
 
         return localSessionFactoryBean;
     }
