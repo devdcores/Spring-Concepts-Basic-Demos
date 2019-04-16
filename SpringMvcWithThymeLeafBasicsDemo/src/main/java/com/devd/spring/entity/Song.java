@@ -10,6 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -25,19 +28,17 @@ public class Song {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "SONG_ID", updatable = false, nullable = false)
-    private UUID id;
+    @Column(updatable = false, nullable = false)
+    private UUID songId;
 
-    @Column(name = "SONG_NAME")
-    private String name;
+    @NotNull(message = "Song Name should not be empty or null")
+    @NotEmpty(message = "Song Name should not be empty or null")
+    private String songName;
 
-    @Column(name = "FILM_NAME")
-    private String filmName;
+    @NotNull(message = "Artist Name should not be empty or null")
+    @NotEmpty(message = "Song Name should not be empty or null")
+    private String artist;
 
-    @Column(name = "SINGER")
-    private String singer;
-
-    @Column(name = "YEAR")
-    private String year;
+    private LocalDate createdDate = LocalDate.now();
 
 }

@@ -4,22 +4,17 @@ import com.devd.spring.entity.Song;
 import com.devd.spring.service.SongService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,6 +38,7 @@ public class SongController {
         List<Song> songs = allSongs.getBody();
         log.info("Songs : "+ songs);
         model.addAttribute("songs", songs);
+        model.addAttribute("song", new Song());
         return "index";
     }
 
@@ -54,25 +50,42 @@ public class SongController {
     }
 
     @PostMapping("/song")
-    public ResponseEntity<?> saveStudent(@RequestBody Song song) {
+    public String saveStudent(@ModelAttribute("song") @Validated Song song, BindingResult bindingResult, Model model) {
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/{id}")
-                .buildAndExpand(songService.saveSong(song)).toUri();
+        ResponseEntity<List<Song>> allSongs = getAllSongs();
+        List<Song> songs = allSongs.getBody();
+        log.info("Songs : " + songs);
+        model.addAttribute("songs", songs);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(location);
+        if (bindingResult.hasErrors()) {
 
-        //created song id will be sent in the response headers.
-        return new ResponseEntity<>(headers,HttpStatus.CREATED);
+            return "index";
+        }
+
+        songService.saveSong(song);
+
+
+        return "redirect:/";
 
     }
 
-    @PutMapping("/song")
-    public ResponseEntity<Void> updateStudent(@RequestBody Song song) {
-        songService.updateSong(song);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping("/editSong/{songId}")
+    public String updateStudent(@PathVariable("songId") String songId, Model model) {
+        ResponseEntity<Song> songById = this.getSongById(songId);
+        Song body = songById.getBody();
+        model.addAttribute("song", body);
+        ResponseEntity<List<Song>> allSongs = getAllSongs();
+        List<Song> songs = allSongs.getBody();
+        log.info("Songs : " + songs);
+        model.addAttribute("songs", songs);
+        return "index";
     }
+
+//    @PostMapping("/editSong/{songId}")
+//    public  updateStudent(@RequestBody Song song) {
+//        songService.updateSong(song);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
     @GetMapping("/song")
     public ResponseEntity<List<Song>> getAllSongs() {
@@ -80,9 +93,12 @@ public class SongController {
         return new ResponseEntity<>(songService.getAllSongs(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/song/{songId}")
-    public ResponseEntity<Song> deleteSong(@PathVariable("songId") String songId){
+    @PostMapping("/deleteSong/{songId}")
+    public String deleteSong(@PathVariable("songId") String songId) {
+        System.out.println("Song Id :" + songId);
         songService.deleteSongById(songId);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        return "redirect:" + "/";
+//        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

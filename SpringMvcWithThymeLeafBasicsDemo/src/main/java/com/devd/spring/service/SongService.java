@@ -34,12 +34,16 @@ public class SongService {
 
     public String saveSong(Song song) {
         log.info("Saving Song in DB!!");
+        if(song.getSongId()!=null){
+            songRepository.updateSong(song);
+            return song.getSongId().toString();
+        }
         return songRepository.saveSong(song);
     }
 
     public void updateSong(Song song) {
         //to check weather song exists.
-        getSongById(String.valueOf(song.getId()));
+        getSongById(String.valueOf(song.getSongId()));
         songRepository.updateSong(song);
     }
 

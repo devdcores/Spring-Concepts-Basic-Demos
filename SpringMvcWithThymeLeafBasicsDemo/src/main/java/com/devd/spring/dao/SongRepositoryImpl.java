@@ -34,7 +34,7 @@ public class SongRepositoryImpl implements SongRepository {
         Root<Song> root = criteria.from(Song.class);
         Song song;
         try {
-            criteria.select(root).where(builder.equal(root.get("id"), songId));
+            criteria.select(root).where(builder.equal(root.get("songId"), songId));
 
             Query<Song> q = currentSession.createQuery(criteria);
             song = q.getSingleResult();
