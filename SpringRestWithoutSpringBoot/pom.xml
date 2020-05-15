@@ -53,7 +53,7 @@
 
     <properties>
         <spring.version>5.1.0.RELEASE</spring.version>
-        <jackson.library>2.9.8</jackson.library>
+        <jackson.library>2.11.0</jackson.library>
         <hibernate.version>5.3.7.Final</hibernate.version>
         <logback.version>1.2.3</logback.version>
         <jcl.slf4j.version>1.7.25</jcl.slf4j.version>
